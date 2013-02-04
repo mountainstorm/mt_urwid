@@ -277,6 +277,7 @@ class VScrollBar(ScrollBar):
 		return ScrollBar._mouse_event(self, size[1], event, button, row)
 
 
+# BUG: dont let bar length go below 1
 class ScrollView(urwid.Widget):
 	_sizing = frozenset([u'box'])
 	_selectable = True
