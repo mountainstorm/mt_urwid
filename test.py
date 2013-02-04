@@ -24,6 +24,7 @@
 
 import tabview
 import scrollview
+import splitview
 import urwid
 
 
@@ -32,7 +33,9 @@ palette = [
     ('header1', '', '', '' , 'g60', 'g20'),
     ('body',  '', '', '', '#fff', 'g10'),
     ('dif',  '', '', '', '#f00', 'g10'),
-    ('scroll', '', '', '', 'g20', 'g10')]
+    ('scroll', '', '', '', 'g20', 'g10'),
+    ('splitbar', '', '', '', 'g50', 'g10')
+]
 
 
 txt1 = urwid.Text(u"tab 1")
@@ -251,7 +254,7 @@ tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab 7 tab7  tab7
 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab 8 tab8  tab8""")
 
 
-f1 = urwid.Filler(urwid.AttrWrap(urwid.LineBox(txt1, "body"), 'dif'))
+f1 = urwid.AttrWrap(urwid.Filler(urwid.AttrWrap(urwid.LineBox(txt1, "body"), 'dif')), 'body')
 f2 = scrollview.ScrollView(urwid.BigText("Hello World and welcome to my scroll view", 
 	urwid.Thin6x6Font()), 'scroll')
 f3 = scrollview.ScrollView(txt3, 'scroll')
@@ -261,6 +264,14 @@ tab_view = tabview.TabView(
 	'header',
 	'header1',
 	[(u'Hello World', f1, True), (u'Goodbyte', f2, True), (u'test.py', f3)]
+)
+
+split = splitview.SplitView(
+	tab_view,
+	f1,
+	False,
+	0.3,
+	'splitbar'
 )
 
 def unhandled(key):
@@ -274,7 +285,7 @@ def unhandled(key):
 	elif key in ('q', 'Q'):
 		raise urwid.ExitMainLoop()
 
-loop = urwid.MainLoop(tab_view, palette, unhandled_input=unhandled)
+loop = urwid.MainLoop(split, palette, unhandled_input=unhandled)
 loop.screen.set_terminal_properties(colors=256)
 loop.screen.set_mouse_tracking()
 loop.run()
