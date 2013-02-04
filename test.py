@@ -268,7 +268,7 @@ tab_view = tabview.TabView(
 
 split1 = splitview.SplitView(
 	f1,
-	f1, #tab_view,
+	tab_view,
 	False,
 	0.4,
 	'splitbar'
