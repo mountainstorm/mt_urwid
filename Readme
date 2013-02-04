@@ -8,7 +8,7 @@ Bascially its a ncurses style console library but nicely wrapped in python and
 with much better support for making complex widgets.
 
 This repo basically includes a few widgets I built to experiment with the 
-library.  At the moment we have a scrollview and a tabview.
+library.  At the moment we have a scrollview, splitview and a tabview.
 
 
 License

@@ -266,10 +266,18 @@ tab_view = tabview.TabView(
 	[(u'Hello World', f1, True), (u'Goodbyte', f2, True), (u'test.py', f3)]
 )
 
-split = splitview.SplitView(
-	tab_view,
+split1 = splitview.SplitView(
 	f1,
+	f1, #tab_view,
 	False,
+	0.4,
+	'splitbar'
+)
+
+split = splitview.SplitView(
+	split1,
+	urwid.AttrWrap(urwid.Filler(urwid.AttrWrap(urwid.LineBox(txt2, "body"), 'dif')), 'body'),
+	True,
 	0.3,
 	'splitbar'
 )

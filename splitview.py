@@ -28,10 +28,7 @@ import urwid
 class SplitViewDivider(urwid.WidgetWrap):
 	def __init__(self, horiz, attr=None):
 		self._horiz = horiz
-		if horiz:
-			divide = urwid.AttrWrap(urwid.SolidFill(u'─'),	attr)
-		else:
-			divide = urwid.AttrWrap(urwid.SolidFill(u'│'), attr)
+		
 		urwid.WidgetWrap.__init__(self, divide)
 
 
@@ -40,8 +37,14 @@ class SplitView(urwid.WidgetWrap):
 		self._horiz = horiz
 		self._indrag = None
 		self._split = split
-		if divide is None:
-			divide = SplitViewDivider(horiz, attr)
+		if horiz:
+			if divide is None:
+				divide = u'─'
+			divide = urwid.AttrWrap(urwid.SolidFill(divide),	attr)
+		else:
+			if divide is None:
+				divide = u'│'
+			divide = urwid.AttrWrap(urwid.SolidFill(divide), attr)
 
 		contents = [
 			(u'weight', split, first), 
@@ -51,7 +54,7 @@ class SplitView(urwid.WidgetWrap):
 		if horiz:
 			cont = urwid.Pile(contents)
 		else:
-			cont = urwid.Columns(contents)
+			cont = urwid.Columns(contents, min_width=0)
 		urwid.WidgetWrap.__init__(self, cont)
 
 	def mouse_event(self, size, event, button, col, row, focus):
@@ -66,10 +69,12 @@ class SplitView(urwid.WidgetWrap):
 			delta = col - self._indrag[0]
 			if self._horiz:
 				delta = row - self._indrag[1]
-			self._indrag = (col, row)
 			if delta != 0:
 				# we've actually moved - re-calculate the split
-				self._update_split(size, delta, focus) 
+				if self._split > 0.0 and self._split < 1.0:
+					# only update if we adjusted - otherwise it all feels wrong
+					self._indrag = (col, row)
+				self._update_split(size, delta, focus)
 		else:
 			retval = self._w.mouse_event(size, event, button, col, row, focus)
 		return retval
@@ -92,6 +97,7 @@ class SplitView(urwid.WidgetWrap):
 		else:
 			s = size[0]
 		self._split += (1.0 / s) * delta
+		self._split = max(min(self._split, 1.0), 0.0)
 		options = self._w.options(u'weight', self._split)
 		self._w.contents[0] = (self._w.contents[0][0], options)
 		options = self._w.options(u'weight', 1.0 - self._split)
